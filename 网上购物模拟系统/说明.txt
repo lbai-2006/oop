@@ -1,0 +1,10 @@
+类：
+ShoppingSystem
+Administrator
+Customer
+
+编译运行：
+cd "d:\study\oop\网上购物模拟系统"
+$src = Get-ChildItem -Filter *.cpp | % FullName
+g++ -std=c++17 -O2 -Wall -Wextra $src -o main
+.\main
