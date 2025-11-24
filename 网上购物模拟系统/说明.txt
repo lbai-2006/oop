@@ -2,9 +2,18 @@
 ShoppingSystem
 Administrator
 Customer
+Product
+
+
+第二次 VS 第一次
+添加Product类，商品本身性质，友元类：Administrator，Customer，ShoppingSystem：分别定义管理员可添加，修改删除商品；用户可浏览查询商品；系统可展示所有商品的函数
+添加静态变量：users  products，存储购物系统数据，在退出系统的时候清空（服务器系统一直运行，能一直保存）。
+给Customer类添加函数：BrowseProducts，PreciseSearchProducts，FuzzySearchProducts
+给Administrator类添加函数：AddProduct，EditProduct，DeleteProduct
+
 
 编译运行：
-cd "d:\study\oop\网上购物模拟系统"
+cd "D:\study\oop\cloud\oop\网上购物模拟系统"
 $src = Get-ChildItem -Filter *.cpp | % FullName
 g++ -std=c++17 -O2 -Wall -Wextra $src -o main
 .\main
