@@ -1,5 +1,5 @@
 #include<iostream>
-#include<fstream> //ÎÄ¼şÁ÷
+#include<fstream> 
 #include<cstdlib>
 #include "administrator.hpp"
 #include "shopping_system.hpp"
