@@ -11,25 +11,33 @@
 
 using namespace std;
 
-// 定义静态成员（每个系统有自己的数据库）
-vector<Customer> ShoppingSystem::customers;
-vector<Product> ShoppingSystem::products;
+// 定义静态成员（全局唯一性）--所有ShoppingSystem对象（如果有两个system类变量的话）共享一个数据库
+vector<Customer> ShoppingSystem::customers; //后续使用getter方法访问，更安全
+vector<Product> ShoppingSystem::products; //后续使用getter方法访问，更安全
+
+// 定义文件路径常量
+const string ShoppingSystem::CUSTOMERS_FILE = "customers.txt";
+const string ShoppingSystem::PRODUCTS_FILE = "products.txt";
 
 void ShoppingSystem::Init(){
-    //初始化用户列表数据库
-    ShoppingSystem::customers.push_back(Customer("admin", "admin123"));
-    //初始化商品列表数据库，添加5个商品
-    ShoppingSystem::products.push_back(Product("food", "cake", 20, 100, "delicious"));
-    // Example 1: A book
-    ShoppingSystem::products.push_back(Product("Books", "C++ Primer", 128, 50, "A classic beginner's guide to C++."));
-    // Example 2: A smartphone
-    ShoppingSystem::products.push_back(Product("Electronics", "iPhone 14", 5999, 30, "The latest smartphone from Apple."));
-    // Example 3: A bag of rice
-    ShoppingSystem::products.push_back(Product("Food", "Northeast Rice", 69, 500, "High-quality rice from the origin."));
-    // Example 4: An electric toothbrush
-    ShoppingSystem::products.push_back(Product("Daily Necessities", "Philips Electric Toothbrush", 299, 100, "Electric toothbrush for healthy teeth."));
-    // Example 5: A pair of headphones
-    ShoppingSystem::products.push_back(Product("Electronics", "Sony WH-1000XM4", 1999, 20, "Wireless noise-canceling headphones."));
+    // 先尝试从文件加载数据
+    LoadFromFile();
+    
+    // 如果文件不存在或为空，则初始化默认数据
+    if(ShoppingSystem::customers.empty()){
+        printf("未找到用户数据文件，初始化默认用户...\n");
+        ShoppingSystem::customers.push_back(Customer("admin", "admin123"));
+    }
+    
+    if(ShoppingSystem::products.empty()){
+        printf("未找到商品数据文件，初始化默认商品...\n");
+        ShoppingSystem::products.push_back(Product("food", "cake", 20, 100, "delicious"));
+        ShoppingSystem::products.push_back(Product("Books", "C++Primer", 128, 50, "A classic beginner's guide to C++."));
+        ShoppingSystem::products.push_back(Product("Electronics", "iPhone14", 5999, 30, "The latest smartphone from Apple."));
+        
+        // 保存初始数据到文件
+        SaveToFile();
+    }
 }
 
 ShoppingSystem::ShoppingSystem(){
@@ -40,17 +48,24 @@ ShoppingSystem::ShoppingSystem(){
 void ShoppingSystem::ShowCustomerFile(){
     //显示用户列表
     for(size_t i = 0; i < ShoppingSystem::customers.size(); i++){
-        cout << "用户名：" << ShoppingSystem::customers.at(i).username << " 密码：" << ShoppingSystem::customers.at(i).password << endl;
+        printf("用户名：%s  密码：%s\n", 
+               ShoppingSystem::customers.at(i).username.c_str(), 
+               ShoppingSystem::customers.at(i).password.c_str());
     }
-    cout << "用户列表显示完毕！" << endl;
+    printf("用户列表显示完毕！\n");
 }
 
 void ShoppingSystem::ShowProductFile(){
-    //显示商品列表
+    //显示商品列表（使用getter方法，更安全）
     for(size_t i = 0; i < ShoppingSystem::products.size(); i++){
-        cout << "商品ID：" << ShoppingSystem::products.at(i).product_class << " 商品名称：" << ShoppingSystem::products.at(i).product_name << " 商品价格：" << ShoppingSystem::products.at(i).product_price << " 商品库存：" << ShoppingSystem::products.at(i).product_stock << " 商品描述：" << ShoppingSystem::products.at(i).product_description << endl;
+        printf("商品类别：%s  商品名称：%s  商品价格：%.2f  商品库存：%d  商品描述：%s\n",
+               ShoppingSystem::products.at(i).GetProductClass().c_str(),
+               ShoppingSystem::products.at(i).GetProductName().c_str(),
+               ShoppingSystem::products.at(i).GetProductPrice(),
+               ShoppingSystem::products.at(i).GetProductStock(),
+               ShoppingSystem::products.at(i).GetProductDescription().c_str());
     }
-    cout << "商品列表显示完毕！" << endl;
+    printf("商品列表显示完毕！\n");
 }
 
 void ShoppingSystem::Run(){
@@ -89,6 +104,9 @@ void ShoppingSystem::Run(){
                 string password;
                 cin >> password;
                 logined = admin.LogIn(name, password);
+                printf("\n按回车键继续...");
+                cin.ignore();
+                cin.get();
                 break;
             }
             case 2: {
@@ -99,6 +117,9 @@ void ShoppingSystem::Run(){
                 string password;
                 cin >> password;
                 logined = customer.LogIn(username, password);
+                printf("\n按回车键继续...");
+                cin.ignore();
+                cin.get();
                 break;
             }
             case 3: {
@@ -109,6 +130,9 @@ void ShoppingSystem::Run(){
                 string password;
                 cin >> password;
                 customer.SignUp(username, password);
+                printf("\n按回车键继续...");
+                cin.ignore();
+                cin.get();
                 break;
             }
             case 4: {
@@ -123,10 +147,16 @@ void ShoppingSystem::Run(){
                 cin >> new_password;
                 customer.LogIn(username, old_password);
                 customer.ChangePassword(username, old_password, new_password);
+                printf("\n按回车键继续...");
+                cin.ignore();
+                cin.get();
                 break;
             }
             case 5: {
                 customer.BrowseProducts();
+                printf("\n按回车键继续...");
+                cin.ignore();
+                cin.get();
                 break;
             }
             case 6: {
@@ -134,6 +164,9 @@ void ShoppingSystem::Run(){
                 string product_name;
                 cin >> product_name;
                 customer.PreciseSearchProducts(product_name);
+                printf("\n按回车键继续...");
+                cin.ignore();
+                cin.get();
                 break;
             }
             case 7: { 
@@ -141,6 +174,9 @@ void ShoppingSystem::Run(){
                 string keyword;
                 cin >> keyword;
                 customer.FuzzySearchProducts(keyword);
+                printf("\n按回车键继续...");
+                cin.ignore();
+                cin.get();
                 break;
             }
             case 8: {
@@ -154,6 +190,9 @@ void ShoppingSystem::Run(){
                     string password;
                     cin >> password;
                     logined = customer.LogIn(username, password);
+                    printf("\n按回车键继续...");
+                    cin.ignore();
+                    cin.get();
                     break;
                 }
                 if(logined == 1){
@@ -162,6 +201,9 @@ void ShoppingSystem::Run(){
                     }
                     //customer.Buy(product_id);
                 }
+                printf("\n按回车键继续...");
+                cin.ignore();
+                cin.get();
                 break;
             }
             case 9: {
@@ -173,6 +215,9 @@ void ShoppingSystem::Run(){
                 }
                 logined = 0;
                 printf("退出登录！\n");
+                printf("\n按回车键继续...");
+                cin.ignore();
+                cin.get();
                 break;
             }
             case 10: {
@@ -210,6 +255,9 @@ void ShoppingSystem::Run(){
                 }else{
                     printf("您没有权限添加商品！\n");
                 }
+                printf("\n按回车键继续...");
+                cin.ignore();
+                cin.get();
                 break;
             }
             case 12: {
@@ -235,6 +283,9 @@ void ShoppingSystem::Run(){
                 }else{
                     printf("您没有权限修改商品！\n");
                 }
+                printf("\n按回车键继续...");
+                cin.ignore();
+                cin.get();
                 break;
             }
             case 13: {
@@ -250,10 +301,16 @@ void ShoppingSystem::Run(){
                 }else{
                     printf("您没有权限删除商品！\n");
                 }
+                printf("\n按回车键继续...");
+                cin.ignore();
+                cin.get();
                 break;
             }
             default:{
                 printf("无效的选择！\n");
+                printf("\n按回车键继续...");
+                cin.ignore();
+                cin.get();
                 break;
             }
         }
@@ -261,10 +318,123 @@ void ShoppingSystem::Run(){
 }
 
 void ShoppingSystem::Exit(){
-    //退出系统
-    //清空数据库信息
+    //保存数据到文件
+    SaveToFile();
+    //清空内存中的数据库信息，不清除文件中的数据
     ShoppingSystem::customers.clear();
     ShoppingSystem::products.clear();
-    printf("退出系统！\n");
+    printf("数据已保存，退出系统！\n");
     exit(0);
+}
+
+// 保存用户数据到文件
+void ShoppingSystem::SaveCustomersToFile(){
+    ofstream outfile(CUSTOMERS_FILE);
+    if(!outfile.is_open()){
+        printf("无法打开用户数据文件进行写入！\n");
+        return;
+    }
+    
+    for(size_t i = 0; i < customers.size(); i++){
+        // 格式：用户名|密码
+        outfile << customers[i].username << "|" << customers[i].password << endl;
+    }
+    
+    outfile.close();
+    printf("用户数据已保存到 %s\n", CUSTOMERS_FILE.c_str());
+}
+
+// 保存商品数据到文件（使用getter方法，更安全）
+void ShoppingSystem::SaveProductsToFile(){
+    ofstream outfile(PRODUCTS_FILE);
+    if(!outfile.is_open()){
+        printf("无法打开商品数据文件进行写入！\n");
+        return;
+    }
+    
+    for(size_t i = 0; i < products.size(); i++){
+        // 格式：类别|名称|价格|库存|描述
+        outfile << products[i].GetProductClass() << "|" 
+                << products[i].GetProductName() << "|" 
+                << products[i].GetProductPrice() << "|" 
+                << products[i].GetProductStock() << "|" 
+                << products[i].GetProductDescription() << endl;
+    }
+    
+    outfile.close();
+    printf("商品数据已保存到 %s\n", PRODUCTS_FILE.c_str());
+}
+
+// 从文件加载用户数据
+void ShoppingSystem::LoadCustomersFromFile(){
+    ifstream infile(CUSTOMERS_FILE);
+    if(!infile.is_open()){
+        printf("用户数据文件不存在，将创建新文件。\n");
+        return;
+    }
+    
+    customers.clear(); // 清空现有数据
+    string line;
+    while(getline(infile, line)){
+        if(line.empty()) continue;
+        
+        // 解析格式：用户名|密码
+        size_t pos = line.find('|');
+        if(pos != string::npos){
+            string username = line.substr(0, pos);
+            string password = line.substr(pos + 1);
+            
+            // 创建用户对象，但不自动添加到数据库（add_to_db=false）
+            customers.push_back(Customer(username, password, false));
+        }
+    }
+    
+    infile.close();
+    printf("已从 %s 加载 %zu 个用户。\n", CUSTOMERS_FILE.c_str(), customers.size());
+}
+
+// 从文件加载商品数据
+void ShoppingSystem::LoadProductsFromFile(){
+    ifstream infile(PRODUCTS_FILE);
+    if(!infile.is_open()){
+        printf("商品数据文件不存在，将创建新文件。\n");
+        return;
+    }
+    
+    products.clear(); // 清空现有数据
+    string line;
+    while(getline(infile, line)){
+        if(line.empty()) continue;
+        
+        // 解析格式：类别|名称|价格|库存|描述
+        stringstream ss(line);
+        string product_class, product_name, product_description;
+        double product_price;
+        int product_stock;
+        
+        getline(ss, product_class, '|');
+        getline(ss, product_name, '|');
+        ss >> product_price;
+        ss.ignore(); // 忽略 '|'
+        ss >> product_stock;
+        ss.ignore(); // 忽略 '|'
+        getline(ss, product_description);
+        
+        products.push_back(Product(product_class, product_name, product_price, product_stock, product_description));
+    }
+    
+    infile.close();
+    printf("已从 %s 加载 %zu 个商品。\n", PRODUCTS_FILE.c_str(), products.size());
+}
+
+// 统一保存接口
+void ShoppingSystem::SaveToFile(){
+    SaveCustomersToFile();
+    SaveProductsToFile();
+}
+
+// 统一加载接口
+void ShoppingSystem::LoadFromFile(){
+    LoadCustomersFromFile();
+    LoadProductsFromFile();
 }

@@ -5,7 +5,7 @@
 #include "product.hpp"
 using namespace std;
 
-// 前向声明，避免循环依赖
+// 前向声明，避免循环依赖，头文件最好不要include其他头文件
 class ShoppingSystem;
 
 class Administrator{

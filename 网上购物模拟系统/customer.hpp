@@ -15,7 +15,7 @@ class Customer{
         string username;
         string password;
     public:
-        Customer(string username, string password);
+        Customer(string username, string password, bool add_to_db = true);
         //~Customer();
         void SignUp(string username, string password);
         int LogIn(string username, string password);
