@@ -15,6 +15,13 @@ ShoppingSystem类添加友元类：Administrator，Customer，访问数据库
 给Administrator类添加函数：AddProduct，EditProduct，DeleteProduct
 
 
+第三次 VS 第二次
+类Customer中添加AddToCart，RemoveFromCart，ModifyCart，ShowCart方法
+添加静态变量customer_carts作为内存
+文件：customer_carts.txt作为数据库
+类Customer中添加方法LoadCustomerCartsFromList，SaveCustomerCartsToList进行文件、内存、购物车变量的更新
+ShoppingSystem添加文件内存的读写更新
+
 编译运行：
 cd "D:\study\oop\cloud\oop\网上购物模拟系统"
 $src = Get-ChildItem -Filter *.cpp | % FullName
