@@ -3,9 +3,11 @@
 #include<cstdlib>
 #include "administrator.hpp"
 #include "shopping_system.hpp"
+#include "customer.hpp"
 #include<vector>
 #include<sstream>
 #include<string>
+#include<map>
 
 using namespace std;
 
@@ -47,7 +49,28 @@ void Administrator::EditProduct(Product product){
     }
     if(found){
         printf("商品修改成功！\n");
-        // 修改操作需要完整保存（覆盖整个文件）
+        
+        // 同步更新 ShoppingSystem::customer_carts 中的该商品信息
+        int updated_carts = 0;
+        for(auto& user_cart : ShoppingSystem::customer_carts){
+            vector<pair<Product, int>>& cart = user_cart.second;
+            for(size_t j = 0; j < cart.size(); j++){
+                // 如果购物车中有同名商品，更新商品信息（保持数量不变）
+                if(cart.at(j).first.product_name == product.product_name){
+                    int quantity = cart.at(j).second; // 保存数量
+                    cart.at(j).first = product; // 更新商品信息
+                    cart.at(j).second = quantity; // 恢复数量
+                    updated_carts++;
+                }
+            }
+        }
+        if(updated_carts > 0){
+            printf("已同步更新 %d 个用户购物车中的商品信息！\n", updated_carts);
+        }
+        
+        // 保存购物车数据到文件
+        ShoppingSystem::SaveCustomerCartsToFile();
+        // 保存商品数据到文件
         ShoppingSystem::SaveProductsToFile();
     } else {
         printf("商品不存在，修改失败！\n");
@@ -64,10 +87,31 @@ void Administrator::DeleteProduct(Product product){
         }
     }
     if(found == 0){
-        printf("商品不存在！\n");
+        printf("商品不存在！\n"); 
     }else{
         printf("商品删除成功！\n");
-        // 删除操作需要完整保存（覆盖整个文件）
+        
+        // 同步删除所有用户购物车中的该商品
+        int removed_carts = 0;
+        for(auto& user_cart : ShoppingSystem::customer_carts){
+            vector<pair<Product, int>>& cart = user_cart.second;
+            for(size_t j = 0; j < cart.size(); ){
+                if(cart.at(j).first.product_name == product.product_name){
+                    cart.erase(cart.begin() + j);
+                    removed_carts++;
+                    // 不增加j，因为删除后后面的元素会前移
+                } else {
+                    j++;
+                }
+            }
+        }
+        if(removed_carts > 0){
+            printf("已从 %d 个用户购物车中移除该商品！\n", removed_carts);
+        }
+        
+        // 保存购物车数据到文件
+        ShoppingSystem::SaveCustomerCartsToFile();
+        // 保存商品数据到文件
         ShoppingSystem::SaveProductsToFile();
     }
 }

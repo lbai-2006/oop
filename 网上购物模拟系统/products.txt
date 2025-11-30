@@ -1,4 +1,3 @@
-food|cake|20|100|delicious
+food|cake|20|200|delicious
 food|cookie|22|2|delicious
 water|baisuishan|20|22|neccessary
-water|yibao|3|33|neccessary

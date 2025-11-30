@@ -11,13 +11,16 @@
 
 using namespace std;
 
+// 内存
 // 定义静态成员（全局唯一性）--所有ShoppingSystem对象（如果有两个system类变量的话）共享一个数据库
 vector<Customer> ShoppingSystem::customers; //后续使用getter方法访问，更安全
 vector<Product> ShoppingSystem::products; //后续使用getter方法访问，更安全
+map<string, vector<pair<Product, int>>> ShoppingSystem::customer_carts; //用户购物车数据库，键为用户名
 
 // 定义文件路径常量
 const string ShoppingSystem::CUSTOMERS_FILE = "customers.txt";
 const string ShoppingSystem::PRODUCTS_FILE = "products.txt";
+const string ShoppingSystem::CUSTOMER_CARTS_FILE = "customer_carts.txt";
 
 void ShoppingSystem::Init(){
     // 先尝试从文件加载数据
@@ -90,6 +93,11 @@ void ShoppingSystem::Run(){
             printf("==11.添加商品\n");
             printf("==12.修改商品\n");
             printf("==13.删除商品\n");
+        }else if(logined == 1){
+            printf("==14.查看购物车\n");
+            printf("==15.添加商品到购物车\n");
+            printf("==16.从购物车中移除商品\n");
+            printf("==17.修改购物车中商品数量\n");
         }
         printf("================================\n");
         printf("请选择操作：\n");
@@ -306,6 +314,85 @@ void ShoppingSystem::Run(){
                 cin.get();
                 break;
             }
+            case 14: {
+                printf("查看购物车！\n");
+                if(logined != 1){  //身份验证，只有用户可以查看购物车
+                    printf("您没有权限查看购物车！\n");
+                    printf("\n按回车键继续...");
+                    cin.ignore();
+                    cin.get();
+                    break;
+                }
+                customer.ShowCart();
+                printf("\n按回车键继续...");
+                cin.ignore();
+                cin.get(); 
+                break;
+            }
+            case 15: {
+                printf("添加商品到购物车！\n");
+                if(logined != 1){  //身份验证，只有用户可以添加商品到购物车
+                    printf("您没有权限添加商品到购物车！\n");
+                    printf("\n按回车键继续...");
+                    cin.ignore();
+                    cin.get();
+                    break;
+                }
+                printf("请输入商品名称：");
+                string product_name;
+                cin >> product_name;
+                customer.AddToCart(product_name);
+                printf("\n按回车键继续...");
+                cin.ignore();
+                cin.get();
+                break;
+            }
+            case 16: {
+                printf("从购物车中移除商品！\n");
+                if(logined != 1){  //身份验证，只有用户可以从购物车中移除商品
+                    printf("您没有权限从购物车中移除商品！\n");
+                    printf("\n按回车键继续...");
+                    cin.ignore();
+                    cin.get();
+                    break;
+                }
+                vector<string> temp_products;
+                printf("要移除的商品数量：");
+                int quantity;
+                cin >> quantity;
+                for(int i = 0; i < quantity; i++){
+                    printf("请输入商品名称：");
+                    string product_name;
+                    cin >> product_name; 
+                    temp_products.push_back(product_name);
+                }
+                customer.RemoveFromCart(temp_products);
+                printf("\n按回车键继续...");
+                cin.ignore();
+                cin.get();
+                break;
+            }
+            case 17: {
+                printf("修改购物车中商品数量！\n");
+                if(logined != 1){  //身份验证，只有用户可以修改购物车中商品数量
+                    printf("您没有权限修改购物车中商品数量！\n");
+                    printf("\n按回车键继续...");
+                    cin.ignore();
+                    cin.get();
+                    break;
+                }
+                printf("请输入商品名称：");
+                string product_name;
+                cin >> product_name;
+                printf("请输入商品数量：");
+                int quantity;
+                cin >> quantity;
+                customer.ModifyCart(product_name, quantity);
+                printf("\n按回车键继续...");
+                cin.ignore();
+                cin.get();
+                break;
+            }
             default:{
                 printf("无效的选择！\n");
                 printf("\n按回车键继续...");
@@ -427,14 +514,93 @@ void ShoppingSystem::LoadProductsFromFile(){
     printf("已从 %s 加载 %zu 个商品。\n", PRODUCTS_FILE.c_str(), products.size());
 }
 
+// 从文件加载用户购物车数据到内存
+void ShoppingSystem::LoadCustomerCartsFromFile(){
+    ifstream infile(CUSTOMER_CARTS_FILE);
+    if(!infile.is_open()){
+        printf("用户购物车数据文件不存在，将创建新文件。\n");
+        return;
+    }
+    
+    customer_carts.clear(); // 清空现有数据
+    string line;
+    int total_items = 0;
+    while(getline(infile, line)){
+        if(line.empty()) continue;
+        
+        // 解析格式：用户名|商品类别|商品名称|商品价格|商品库存|商品描述|数量
+        stringstream ss(line);
+        string username, product_class, product_name, product_description;
+        double product_price;
+        int product_stock, quantity;
+        
+        getline(ss, username, '|');
+        getline(ss, product_class, '|');
+        getline(ss, product_name, '|');
+        ss >> product_price;
+        ss.ignore(); // 忽略 '|'
+        ss >> product_stock;
+        ss.ignore(); // 忽略 '|'
+        getline(ss, product_description, '|');
+        ss >> quantity;
+        
+        // 创建商品对象
+        Product product(product_class, product_name, product_price, product_stock, product_description);
+        
+        // 添加到对应用户的购物车
+        customer_carts[username].push_back(make_pair(product, quantity));
+        total_items++;
+    }
+    
+    infile.close();
+    printf("已从 %s 加载 %d 个用户购物车项。\n", CUSTOMER_CARTS_FILE.c_str(), total_items);
+}
+
+// 保存用户购物车数据到文件
+void ShoppingSystem::SaveCustomerCartsToFile(){
+    ofstream outfile(CUSTOMER_CARTS_FILE);
+    if(!outfile.is_open()){
+        printf("无法打开用户购物车数据文件进行写入！\n");
+        return;
+    }
+    
+    int total_items = 0;
+    // 遍历所有用户的购物车
+    for(auto& user_cart : customer_carts){
+        string username = user_cart.first;
+        vector<pair<Product, int>>& cart = user_cart.second;
+        
+        // 遍历该用户购物车中的所有商品
+        for(size_t i = 0; i < cart.size(); i++){
+            const Product& product = cart[i].first;
+            int quantity = cart[i].second;
+            
+            // 格式：用户名|商品类别|商品名称|商品价格|商品库存|商品描述|数量
+            outfile << username << "|"
+                    << product.GetProductClass() << "|"
+                    << product.GetProductName() << "|"
+                    << product.GetProductPrice() << "|"
+                    << product.GetProductStock() << "|"
+                    << product.GetProductDescription() << "|"
+                    << quantity << endl;
+            total_items++;
+        }
+    }
+    
+    outfile.close();
+    printf("用户购物车数据已保存到 %s，共 %d 项。\n", CUSTOMER_CARTS_FILE.c_str(), total_items);
+}
+
 // 统一保存接口
 void ShoppingSystem::SaveToFile(){
     SaveCustomersToFile();
     SaveProductsToFile();
+    SaveCustomerCartsToFile();
 }
 
 // 统一加载接口
 void ShoppingSystem::LoadFromFile(){
     LoadCustomersFromFile();
     LoadProductsFromFile();
+    LoadCustomerCartsFromFile();
 }
