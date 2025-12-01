@@ -2,4 +2,3 @@ food|cake|20|200|delicious
 food|cookie|22|2|delicious
 water|baisuishan|20|22|neccessary
 electronic|ipad|3000|50|pad
-water|yibao|2|400|neccessary

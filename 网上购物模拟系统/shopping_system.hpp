@@ -8,6 +8,7 @@
 using namespace std;
 
 // 前向声明，避免循环依赖
+
 class Customer;
 class Administrator;
 class Cart;

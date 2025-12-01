@@ -42,8 +42,14 @@ void Cart::AddToCart(string product_name){
             char choice;
             cin >> choice;
             if(choice == 'y'){
-                this->items.at(i).second += 1;
-                printf("购物车中已存在该商品，数量增加1！\n");
+                //如果商品库存不足，则提示库存不足
+                if(this->items.at(i).first.GetProductStock() <= 0){
+                    printf("商品库存不足，无法继续添加！\n");
+                }
+                else{
+                    this->items.at(i).second += 1;
+                    printf("购物车中已存在该商品，数量增加1！\n");
+                }
                 // 同步保存到内存和文件
                 SaveCustomerCartsToList();
                 return;
@@ -93,8 +99,14 @@ void Cart::ModifyCart(string product_name, int quantity){
                 this->items.erase(this->items.begin() + j);
                 printf("商品%s数量为0，已从购物车中移除！\n", product_name.c_str());
             } else {
-                this->items.at(j).second = quantity;
-                printf("修改购物车中商品%s数量为%d成功！\n", product_name.c_str(), quantity);
+                //如果商品库存不足，则提示库存不足
+                if(this->items.at(j).first.GetProductStock() <= quantity){
+                    printf("商品库存不足，无法继续修改！\n");
+                }
+                else{
+                    this->items.at(j).second = quantity;
+                    printf("修改购物车中商品%s数量为%d成功！\n", product_name.c_str(), quantity);
+                }
             }
             found = true;
             break;

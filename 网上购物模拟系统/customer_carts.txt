@@ -1,4 +1,1 @@
-bailei|food|cake|20|200|delicious|1
-bailei|food|cookie|22|2|delicious|5
-bailei|water|baisuishan|20|22|neccessary|1
 paisley|food|cake|20|200|delicious|1

@@ -9,9 +9,10 @@ using namespace std;
 // 前向声明，避免循环依赖
 class ShoppingSystem;
 class Administrator;
+
 class Customer{
-    friend class ShoppingSystem; // 需要访问数据库
-    friend class Administrator; // 管理员需要修改购物车中的商品信息
+    friend class ShoppingSystem; 
+    friend class Administrator; 
     
     private:
         string username;
@@ -29,7 +30,7 @@ class Customer{
         void PreciseSearchProducts(string product_name); // 精确搜索商品，不需要验证身份信息
         void FuzzySearchProducts(string keyword); // 模糊搜索商品，不需要验证身份信息
         
-        // 购物车操作方法（委托给 Cart 类）
+        // 购物车操作方法（用 Cart 类）
         void AddToCart(string product_name) { cart.AddToCart(product_name); }
         void RemoveFromCart(vector<string> product_names) { cart.RemoveFromCart(product_names); }
         void ModifyCart(string product_name, int quantity) { cart.ModifyCart(product_name, quantity); }
