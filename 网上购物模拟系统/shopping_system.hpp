@@ -10,12 +10,13 @@ using namespace std;
 // 前向声明，避免循环依赖
 class Customer;
 class Administrator;
-class Customer;
+class Cart;
 
 class ShoppingSystem{
     // 友元类：允许这些类访问私有成员
     friend class Administrator;
     friend class Customer;
+    friend class Cart;
     
 private:
     //声明，没分配内存，静态成员

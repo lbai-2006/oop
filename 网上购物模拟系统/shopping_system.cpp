@@ -317,7 +317,7 @@ void ShoppingSystem::Run(){
             case 14: {
                 printf("查看购物车！\n");
                 if(logined != 1){  //身份验证，只有用户可以查看购物车
-                    printf("您没有权限查看购物车！\n");
+                    printf("您没有权限查看购物车，请先登录！\n");
                     printf("\n按回车键继续...");
                     cin.ignore();
                     cin.get();
@@ -332,7 +332,7 @@ void ShoppingSystem::Run(){
             case 15: {
                 printf("添加商品到购物车！\n");
                 if(logined != 1){  //身份验证，只有用户可以添加商品到购物车
-                    printf("您没有权限添加商品到购物车！\n");
+                    printf("您没有权限添加商品到购物车，请先登录！\n");
                     printf("\n按回车键继续...");
                     cin.ignore();
                     cin.get();
@@ -341,7 +341,7 @@ void ShoppingSystem::Run(){
                 printf("请输入商品名称：");
                 string product_name;
                 cin >> product_name;
-                customer.AddToCart(product_name);
+                customer.cart.AddToCart(product_name);
                 printf("\n按回车键继续...");
                 cin.ignore();
                 cin.get();
@@ -350,7 +350,7 @@ void ShoppingSystem::Run(){
             case 16: {
                 printf("从购物车中移除商品！\n");
                 if(logined != 1){  //身份验证，只有用户可以从购物车中移除商品
-                    printf("您没有权限从购物车中移除商品！\n");
+                    printf("您没有权限从购物车中移除商品，请先登录！\n");
                     printf("\n按回车键继续...");
                     cin.ignore();
                     cin.get();
@@ -366,7 +366,7 @@ void ShoppingSystem::Run(){
                     cin >> product_name; 
                     temp_products.push_back(product_name);
                 }
-                customer.RemoveFromCart(temp_products);
+                customer.cart.RemoveFromCart(temp_products);
                 printf("\n按回车键继续...");
                 cin.ignore();
                 cin.get();
@@ -375,7 +375,7 @@ void ShoppingSystem::Run(){
             case 17: {
                 printf("修改购物车中商品数量！\n");
                 if(logined != 1){  //身份验证，只有用户可以修改购物车中商品数量
-                    printf("您没有权限修改购物车中商品数量！\n");
+                    printf("您没有权限修改购物车中商品数量，请先登录！\n");
                     printf("\n按回车键继续...");
                     cin.ignore();
                     cin.get();
@@ -387,7 +387,7 @@ void ShoppingSystem::Run(){
                 printf("请输入商品数量：");
                 int quantity;
                 cin >> quantity;
-                customer.ModifyCart(product_name, quantity);
+                customer.cart.ModifyCart(product_name, quantity);
                 printf("\n按回车键继续...");
                 cin.ignore();
                 cin.get();
