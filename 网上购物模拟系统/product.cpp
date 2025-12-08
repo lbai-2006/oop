@@ -33,4 +33,6 @@ void Product::ModifyProductStock(int quantity){
     printf("商品库存修改成功！\n");
     // 保存到文件（通过 ShoppingSystem 统一管理商品数据）
     ShoppingSystem::SaveProductsToFile();
+    // 同步更新所有用户购物车中的该商品信息（内存 + customer_carts.txt）
+    ShoppingSystem::SyncProductInAllCarts(*this);
 }

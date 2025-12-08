@@ -39,6 +39,8 @@ class Customer{
 
         //购买商品，顾客可以从购物车或商品列表进行购买，一次可以选择购买一件或多件商品。生成订单，并保存到订单列表中。
         void BuyProducts();
+        //签收订单
+        void ConfirmOrderReceipt(string order_id);
         // 订单操作方法（用 Order 类）
         void AddOrder(Order order);
         void ShowOrders();

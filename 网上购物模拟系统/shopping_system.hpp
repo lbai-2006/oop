@@ -55,6 +55,9 @@ public:
     
     // 自动根据时间更新所有订单状态（示例：10秒后从待发货变为已发货，再过10秒变为已签收）
     static void AutoUpdateOrderStatuses();
+
+    // 当商品信息（特别是库存）发生变化时，同步更新所有用户购物车中的该商品（内存 + customer_carts.txt）
+    static void SyncProductInAllCarts(const Product& product);
 };
 
 

@@ -230,7 +230,7 @@ void Customer::BuyProducts(){
                     }
                     
                     if(stock_ok){
-                        // 扣减购物车数量 / 移除
+                        // 扣减购物车数量 / 移除，并且把库存也扣减
                         this->cart.items.at(i).second -= buy_quantity;
                         if(this->cart.items.at(i).second <= 0){
                             this->cart.items.erase(this->cart.items.begin() + i);
@@ -251,6 +251,8 @@ void Customer::BuyProducts(){
         this->cart.SaveCustomerCartsToList();
         // 同步商品库存到文件
         ShoppingSystem::SaveProductsToFile();
+        // 保存购物车数据到文件
+        ShoppingSystem::SaveCustomerCartsToFile();
     }else if(choice == 2){
         // 直接从商品列表购买
         this->BrowseProducts();
@@ -300,6 +302,8 @@ void Customer::BuyProducts(){
         
         // 同步商品库存到文件
         ShoppingSystem::SaveProductsToFile();
+        // 保存购物车数据到文件
+        ShoppingSystem::SaveCustomerCartsToFile();
     }else{
         printf("输入错误，请重新输入！\n");
         return;
@@ -347,3 +351,24 @@ void Customer::ShowOrders(){
     printf("订单显示完成！\n");
 }
 
+void Customer::ConfirmOrderReceipt(string order_id){
+    auto it = ShoppingSystem::orders.find(order_id);
+    if(it == ShoppingSystem::orders.end()){
+        printf("订单不存在！\n");
+        return;
+    }
+    Order& order = it->second;
+    if(order.username != this->username){
+        printf("您无权操作该订单！\n");
+        return;
+    }
+    if(order.status != "已发货"){
+        printf("订单当前状态为%s，无法签收！\n", order.status.c_str());
+        return;
+    }
+    order.status = "已签收";
+    printf("订单%s签收成功！\n", order_id.c_str());
+    
+    // 保存订单状态到文件
+    ShoppingSystem::SaveOrdersToFile();
+}

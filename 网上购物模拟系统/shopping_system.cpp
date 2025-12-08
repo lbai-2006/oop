@@ -104,6 +104,7 @@ void ShoppingSystem::Run(){
             printf("==17.修改购物车中商品数量\n");
             printf("==20.购买商品\n");
             printf("==21.查看订单\n");
+            printf("==22.确认收货\n");
         }
         printf("================================\n");
         printf("请选择操作：\n");
@@ -480,6 +481,24 @@ void ShoppingSystem::Run(){
                 cin.get();
                 break;
             }
+            case 22: {
+                printf("确认收货！\n");
+                if(logined != 1){  //身份验证，只有用户可以确认收货
+                    printf("您没有权限确认收货，请先登录！\n");
+                    printf("\n按回车键继续...");
+                    cin.ignore();
+                    cin.get();
+                    break;
+                }
+                printf("请输入订单编号：");
+                string order_id;
+                cin >> order_id;
+                customer.ConfirmOrderReceipt(order_id);
+                printf("\n按回车键继续...");
+                cin.ignore();
+                cin.get();
+                break;
+            }
             default:{
                 printf("无效的选择！\n");
                 printf("\n按回车键继续...");
@@ -823,9 +842,7 @@ void ShoppingSystem::SaveOrdersToFile(){
 }
 
 // 根据时间自动更新所有订单状态：
-// 示例策略：
-//  - 订单创建 10 秒后：待发货 -> 已发货
-//  - 订单创建 20 秒后：已发货 -> 已签收
+//  订单创建 10 秒后：待发货 -> 已发货
 void ShoppingSystem::AutoUpdateOrderStatuses(){
     time_t now = time(nullptr);
     bool changed = false;
@@ -836,12 +853,35 @@ void ShoppingSystem::AutoUpdateOrderStatuses(){
         if(order.status == "待发货" && diff >= 10){
             order.status = "已发货";
             changed = true;
-        }else if(order.status == "已发货" && diff >= 20){
-            order.status = "已签收";
-            changed = true;
         }
     }
     if(changed){
         SaveOrdersToFile();
+    }
+}
+
+// 同步更新所有用户购物车中某个商品的信息（特别是库存），并写回 customer_carts.txt
+void ShoppingSystem::SyncProductInAllCarts(const Product& product){
+    // 使用最新商品信息构造一个标准副本
+    Product updated(product.GetProductClass(),
+                    product.GetProductName(),
+                    product.GetProductPrice(),
+                    product.GetProductStock(),
+                    product.GetProductDescription());
+    int updated_count = 0;
+
+    for(auto& user_cart : customer_carts){
+        vector<pair<Product,int>>& cart = user_cart.second;
+        for(size_t i = 0; i < cart.size(); i++){
+            if(cart[i].first.GetProductName() == updated.GetProductName()){
+                cart[i].first = updated;
+                updated_count++;
+            }
+        }
+    }
+
+    if(updated_count > 0){
+        SaveCustomerCartsToFile();
+        printf("已同步更新 %d 条购物车中的商品信息（含库存）。\n", updated_count);
     }
 }
