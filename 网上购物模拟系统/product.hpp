@@ -22,4 +22,6 @@ class Product{
         double GetProductPrice() const { return product_price; }
         int GetProductStock() const { return product_stock; }
         string GetProductDescription() const { return product_description; }
+        //ÐÞ¸ÄÉÌÆ·¿â´æ
+        void ModifyProductStock(int quantity);
     }; 

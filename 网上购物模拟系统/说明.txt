@@ -22,8 +22,15 @@ ShoppingSystem类添加友元类：Administrator，Customer，访问数据库
 文件：customer_carts.txt作为数据库
 类Customer中添加方法LoadCustomerCartsFromList，SaveCustomerCartsToList进行文件、内存、购物车变量的更新
 ShoppingSystem添加用户购物车操作
-ShoppingSystem添加文件内存的读写更新
+ShoppingSystem添加购物车文件内存的读写更新
 
+第四次 VS 第三次
+添加Order类，存储订单信息，展示方法
+给Customer类添加方法BuyProducts，购买商品
+给Administrator类添加方法UpdateOrderStatus，对订单更新状态进行更改（默认为自动更新）
+给ShoppingSystem类添加方法AutoUpdateOrderStatuses，在购买商品后以及系统更新后自动更新订单数据库文件与内存
+给ShoppingSystem类添加用户操作选项：购买商品，查看订单
+ShoppingSystem添加订单文件内存的读写更新
 
 编译运行：
 cd "D:\study\oop\cloud\oop\网上购物模拟系统"

@@ -1,0 +1,8 @@
+bailei_3_1765174909|bailei|2025-12-08 14:21:49|40|zhuyuan|已签收|baisuishan,1;cake,1|1765174909|1
+bailei_4_1765175124|bailei|2025-12-08 14:25:24|20|xdu|已签收|baisuishan,1|1765175124|1
+bailei_5_1765174293|bailei|2025-12-08 14:11:33|20|zhuyuan|已签收|cake,1|1765174293|1
+bailei_5_1765175830|bailei|2025-12-08 14:37:10|22|xdu|已签收|cookie,1|1765175830|1
+bailei_6_1765174445|bailei|2025-12-08 14:14:05|3042|zhuyaun1|待发货|cake,1;cookie,1;ipad,1|1765174445|0
+bailei_6_1765175919|bailei|2025-12-08 14:38:39|20|xdu_zhuyan|已签收|baisuishan,1|1765175919|1
+bailei_7_1765175937|bailei|2025-12-08 14:38:57|20|xdu|已发货|baisuishan,1|1765175937|0
+bailei_8_1765176152|bailei|2025-12-08 14:42:32|3044|xdu|已签收|ipad,1;cookie,2|1765176152|1

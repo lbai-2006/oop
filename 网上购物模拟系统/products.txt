@@ -1,4 +1,4 @@
-food|cake|20|200|delicious
-food|cookie|22|2|delicious
-water|baisuishan|20|22|neccessary
-electronic|ipad|3000|50|pad
+food|cake|20|395|delicious
+food|cookie|22|984|delicious
+water|baisuishan|20|12|neccessary
+electronic|ipad|3000|48|pad

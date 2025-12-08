@@ -3,10 +3,10 @@
 #include<vector>
 #include<string>
 #include<utility>
-
+#include "product.hpp"
+ 
 using namespace std;
-class Product;
-
+ 
 class Cart {
     friend class Customer;
     friend class ShoppingSystem;

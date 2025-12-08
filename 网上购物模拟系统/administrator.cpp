@@ -115,3 +115,6 @@ void Administrator::DeleteProduct(Product product){
         ShoppingSystem::SaveProductsToFile();
     }
 }
+void Administrator::UpdateOrderStatus(Order order){
+    order.UpdateOrderStatus();
+}
