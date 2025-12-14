@@ -20,6 +20,23 @@ void Product::Display(){
     printf("商品价格：%.2f\n", this->product_price);
     printf("商品库存：%d\n", this->product_stock);
     printf("商品描述：%s\n", this->product_description.c_str());
+    //如果该商品在当前活动促销商品列表中（从最新活动开始），显示参与活动类型，如果不在则不显示
+    for(size_t i = 0; i < ShoppingSystem::activities.size(); i++){
+        if(ShoppingSystem::activities.at(i).activity_status == "进行中"){
+            for(size_t j = 0; j < ShoppingSystem::activities.at(i).activity_discount_products.size(); j++){
+                if(ShoppingSystem::activities.at(i).activity_discount_products.at(j).first.GetProductName() == this->product_name){
+                    printf("参与折扣活动，折扣率：%.0f%%\n", ShoppingSystem::activities.at(i).activity_discount_products.at(j).second * 100);
+                    break;
+                }
+            }
+            for(size_t j = 0; j < ShoppingSystem::activities.at(i).activity_full_reduction_products.size(); j++){
+                if(ShoppingSystem::activities.at(i).activity_full_reduction_products.at(j).GetProductName() == this->product_name){
+                    printf("参与满减活动，满减金额：满%.2f元 减%.2f元\n", ShoppingSystem::activities.at(i).activity_threshold, ShoppingSystem::activities.at(i).activity_full_reduction_amount);
+                    break;
+                }
+            }
+        }
+    }
 }
 
 void Product::ModifyProductStock(int quantity){

@@ -26,7 +26,7 @@ ShoppingSystem添加购物车文件内存的读写更新
 
 第四次 VS 第三次
 添加Order类，存储订单信息，展示方法
-给Customer类添加方法BuyProducts，购买商品
+给Customer类添加方法BuyProducts，购买商品，ConfirmOrderReceipt，确认订单
 给Administrator类添加方法UpdateOrderStatus，对订单更新状态进行更改（默认为自动更新）
 给ShoppingSystem类添加方法AutoUpdateOrderStatuses，在购买商品后以及系统更新后自动更新订单数据库文件与内存
 给ShoppingSystem类添加用户操作选项：购买商品，查看订单

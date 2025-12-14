@@ -4,6 +4,7 @@
 #include<vector>
 #include "product.hpp"
 #include "order.hpp"
+#include "activity.hpp"
 using namespace std;
 
 // 前向声明，避免循环依赖，头文件最好不要include其他头文件
@@ -24,4 +25,7 @@ class Administrator{
 
         //修改订单状态
         void UpdateOrderStatus(Order order);
+        void AddActivity(); //添加活动
+        void EditActivity(); //修改活动信息
+        void DeleteActivity(); //删除活动
     };

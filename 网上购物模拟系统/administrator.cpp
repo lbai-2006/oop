@@ -8,8 +8,38 @@
 #include<sstream>
 #include<string>
 #include<map>
+#include<limits>
+#include<functional>
 
 using namespace std;
+
+template<typename T>
+static T Read(const char* prompt, function<bool(const T&)> ok = nullptr){
+    while(true){
+        if(prompt) printf("%s", prompt);
+        T v{};
+        if(cin >> v && (!ok || ok(v))) return v;
+        printf("输入无效，请重新输入。\n");
+        cin.clear();
+        cin.ignore(numeric_limits<streamsize>::max(), '\n');
+    }
+}
+
+// 支持“直接回车使用默认值”的 double 输入（用于折扣率这种可选项）
+static double ReadLineDoubleOrDefault(const char* prompt, double def){
+    printf("%s", prompt);
+    // 清理掉上一轮用 >> 遗留在缓冲区的一整行（通常是换行）
+    cin.ignore(numeric_limits<streamsize>::max(), '\n');
+    string line;
+    getline(cin, line);
+    if(line.empty()) return def;
+    try{
+        return stod(line);
+    }catch(...){
+        printf("输入无效，使用默认值：%.2f\n", def);
+        return def;
+    }
+}
 
 Administrator::Administrator() {
     this->name = "admin";  //管理员账号：admin 密码：admin123
@@ -25,8 +55,10 @@ int Administrator::LogIn(string name, string password){
     }
 }
 void Administrator::LogOut(){
-    this->name = "";
-    this->password = "";
+    // 不要清空管理员账号/密码，否则下一次登录会永远失败
+    // 管理员账号是固定的（admin/admin123），退出登录只需要返回到未登录状态即可
+    this->name = "admin";
+    this->password = "admin123";
     printf("管理员退出登录成功！\n");
 }
 
@@ -117,4 +149,137 @@ void Administrator::DeleteProduct(Product product){
 }
 void Administrator::UpdateOrderStatus(Order order){
     order.UpdateOrderStatus();
+}
+
+void Administrator::AddActivity(){
+    printf("请输入活动名称：");
+    string activity_name;
+    cin >> activity_name;
+
+    bool activity_type_discount = (Read<int>("请输入活动类型（折扣）是(1)/否(0)：", [](const int& x){ return x==0 || x==1; }) == 1);
+    bool activity_type_full_reduction = (Read<int>("请输入活动类型（满减）是(1)/否(0)：", [](const int& x){ return x==0 || x==1; }) == 1);
+    
+    printf("活动现在开始！\n");
+    long long activity_start_time = time(NULL);
+    int activity_duration = Read<int>("请输入活动持续时间（小时）：", [](const int& x){ return x > 0; });
+    long long activity_end_time = activity_start_time + activity_duration * 3600;
+    
+    double activity_discount = 1.0;
+    double activity_threshold = 0;
+    double activity_full_reduction_amount = 0;
+    
+    vector<pair<Product, double>> activity_discount_products;
+    vector<Product> activity_full_reduction_products;
+    
+    if(activity_type_discount){
+        activity_discount = Read<double>("请输入默认折扣率（0-1）：", [](const double& x){ return x > 0 && x <= 1; });
+        
+        int activity_discount_products_count = Read<int>("请输入要添加进折扣活动的商品数量：", [](const int& x){ return x > 0; });
+        for(int i = 0; i < activity_discount_products_count; i++){
+            printf("请输入第%d个商品名称：", i+1);
+            string activity_discount_product_name;
+            cin >> activity_discount_product_name;
+
+            char prompt_buf[128];
+            snprintf(prompt_buf, sizeof(prompt_buf), "请输入该商品的折扣率（0-1，直接回车使用默认%.2f）：", activity_discount);
+            double product_discount = ReadLineDoubleOrDefault(prompt_buf, activity_discount);
+            if(product_discount <= 0 || product_discount > 1){
+                printf("折扣率范围应为 (0,1]，使用默认折扣 %.2f\n", activity_discount);
+                product_discount = activity_discount;
+            }
+            
+            // 查找商品并添加到折扣商品列表
+            bool found = false;
+            for(size_t j = 0; j < ShoppingSystem::products.size(); j++){
+                if(ShoppingSystem::products.at(j).GetProductName() == activity_discount_product_name){
+                    activity_discount_products.push_back(make_pair(ShoppingSystem::products.at(j), product_discount));
+                    found = true;
+                    break;
+                }
+            }
+            if(!found){
+                printf("未找到商品：%s，请重新输入。\n", activity_discount_product_name.c_str());
+                i--; // 重输本项
+            }
+        }
+    }
+    if(activity_type_full_reduction){
+        activity_threshold = Read<double>("请输入满减阈值（元）：", [](const double& x){ return x > 0; });
+        activity_full_reduction_amount = Read<double>("请输入满减金额（元）：", [&](const double& x){ return x > 0 && x <= activity_threshold; });
+        
+        int activity_full_reduction_products_count = Read<int>("请输入要添加进满减活动的商品数量：", [](const int& x){ return x > 0; });
+        for(int i = 0; i < activity_full_reduction_products_count; i++){
+            printf("请输入第%d个商品名称：", i+1);
+            string activity_full_reduction_product_name;
+            cin >> activity_full_reduction_product_name;
+            
+            // 查找商品并添加到满减商品列表
+            bool found = false;
+            for(size_t j = 0; j < ShoppingSystem::products.size(); j++){
+                if(ShoppingSystem::products.at(j).GetProductName() == activity_full_reduction_product_name){
+                    activity_full_reduction_products.push_back(ShoppingSystem::products.at(j));
+                    found = true;
+                    break;
+                }
+            }
+            if(!found){
+                printf("未找到商品：%s，请重新输入。\n", activity_full_reduction_product_name.c_str());
+                i--; // 重输本项
+            }
+        }
+    }
+    
+    //修改活动状态
+    printf("请输入活动状态：1.进行中  2.已结束：");
+    int activity_status_op = Read<int>("请输入活动状态：1.进行中  2.已结束：", [](const int& x){ return x==1 || x==2; });
+    string activity_status = (activity_status_op == 1 ? "进行中" : "已结束");
+    Activity activity(activity_name, activity_type_discount, activity_type_full_reduction, activity_start_time, activity_end_time, activity_discount, activity_threshold, activity_full_reduction_amount, activity_status, activity_discount_products, activity_full_reduction_products);
+    ShoppingSystem::activities.push_back(activity);
+    printf("活动添加成功！\n");
+    //保存活动列表到文件
+    ShoppingSystem::SaveActivitiesToFile();
+}
+
+void Administrator::DeleteActivity(){
+    printf("请输入要删除的活动名称：");
+    string activity_name;
+    cin >> activity_name;
+    
+    bool found = false;
+    for(size_t i = 0; i < ShoppingSystem::activities.size(); i++){
+        if(ShoppingSystem::activities.at(i).activity_name == activity_name){
+            ShoppingSystem::activities.erase(ShoppingSystem::activities.begin() + i);
+            found = true;
+            break;
+        }
+    }
+    if(found){
+        printf("活动删除成功！\n");
+    }else{
+        printf("活动不存在，删除失败！\n");
+    }
+    //保存活动列表到文件
+    ShoppingSystem::SaveActivitiesToFile();
+}
+
+void Administrator::EditActivity(){
+    //和添加活动一样，先删除原来的活动，再重新添加
+    printf("请输入要修改的活动名称：");
+    string activity_name;
+    cin >> activity_name;
+    bool found = false;
+    for(size_t i = 0; i < ShoppingSystem::activities.size(); i++){
+        if(ShoppingSystem::activities.at(i).activity_name == activity_name){
+            ShoppingSystem::activities.erase(ShoppingSystem::activities.begin() + i);
+            found = true;
+            break;
+        }
+    }
+    if(found){
+        printf("找到活动，请重新输入活动信息：\n");
+        AddActivity();
+        printf("活动修改成功！\n");
+    }else{
+        printf("活动不存在，修改失败！\n");
+    }
 }

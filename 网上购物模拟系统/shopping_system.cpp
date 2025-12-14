@@ -8,6 +8,7 @@
 #include<vector>
 #include<sstream>
 #include<string>
+#include<limits>
 
 using namespace std;
 
@@ -17,11 +18,15 @@ vector<Customer> ShoppingSystem::customers; //后续使用getter方法访问，更安全
 vector<Product> ShoppingSystem::products; //后续使用getter方法访问，更安全
 map<string, vector<pair<Product, int>>> ShoppingSystem::customer_carts; //用户购物车数据库，键为用户名
 map<string, Order> ShoppingSystem::orders; //订单数据库，键为订单编号，值为订单对象
+vector<Activity> ShoppingSystem::activities; //活动列表数据库
+
 // 定义文件路径常量
 const string ShoppingSystem::CUSTOMERS_FILE = "customers.txt";
 const string ShoppingSystem::PRODUCTS_FILE = "products.txt";
 const string ShoppingSystem::CUSTOMER_CARTS_FILE = "customer_carts.txt";
 const string ShoppingSystem::ORDERS_FILE = "orders.txt";
+const string ShoppingSystem::ACTIVITIES_FILE = "activities.txt";
+
 void ShoppingSystem::Init(){
     // 先尝试从文件加载数据
     LoadFromFile();
@@ -79,6 +84,8 @@ void ShoppingSystem::Run(){
     while(true){
         // 每次循环自动检查一次订单状态（根据下单时间自动流转）
         ShoppingSystem::AutoUpdateOrderStatuses();
+        // 每次循环自动检查一次活动状态（根据活动结束时间自动流转）
+        ShoppingSystem::AutoUpdateActivityStatuses();
         printf("================================\n");
         printf("欢迎来到网上购物模拟系统！\n");
         printf("==1. 管理员登录\n");
@@ -97,6 +104,10 @@ void ShoppingSystem::Run(){
             printf("==13.删除商品\n");
             printf("==18.查看所有订单\n");
             printf("==19.手动修改订单状态/更新模式\n");
+            printf("==23.查看活动列表\n");
+            printf("==24.添加活动\n");
+            printf("==25.修改活动\n");
+            printf("==26.删除活动\n");
         }else if(logined == 1){
             printf("==14.查看购物车\n");
             printf("==15.添加商品到购物车\n");
@@ -109,7 +120,12 @@ void ShoppingSystem::Run(){
         printf("================================\n");
         printf("请选择操作：\n");
         int choice;
-        cin >> choice;
+        if(!(cin >> choice)){
+            printf("输入无效，请输入数字选项！\n");
+            cin.clear();
+            cin.ignore(numeric_limits<streamsize>::max(), '\n');
+            continue;
+        }
         switch (choice) {
             case 1: {
                 printf("请输入管理员账号：");
@@ -499,6 +515,64 @@ void ShoppingSystem::Run(){
                 cin.get();
                 break;
             }
+            case 23: {
+                printf("查看活动列表！\n");
+                for(const auto& activity : ShoppingSystem::activities){
+                    activity.Display();
+                }
+                printf("\n按回车键继续...");
+                cin.ignore();
+                cin.get();
+                break;
+            }
+            case 24: {
+                printf("添加活动！\n");
+                if(logined != 2){
+                    printf("您没有权限添加活动，请先登录！\n");
+                    printf("\n按回车键继续...");
+                    cin.ignore();
+                    cin.get();
+                    break;
+                }
+                admin.AddActivity();
+                printf("活动添加成功！\n");
+                printf("\n按回车键继续...");
+                cin.ignore();
+                cin.get();
+                break;
+            }
+            case 25: {
+                printf("修改活动！\n");
+                if(logined != 2){
+                    printf("您没有权限修改活动，请先登录！\n");
+                    printf("\n按回车键继续...");
+                    cin.ignore();
+                    cin.get();
+                    break;
+                }
+                admin.EditActivity();
+                printf("活动修改成功！\n");
+                printf("\n按回车键继续...");
+                cin.ignore();
+                cin.get();
+                break;
+            }
+            case 26: {
+                printf("删除活动！\n");
+                if(logined != 2){
+                    printf("您没有权限删除活动，请先登录！\n");
+                    printf("\n按回车键继续...");
+                    cin.ignore();
+                    cin.get();
+                    break;
+                }
+                admin.DeleteActivity();
+                printf("活动删除成功！\n");
+                printf("\n按回车键继续...");
+                cin.ignore();
+                cin.get();
+                break;
+            }
             default:{
                 printf("无效的选择！\n");
                 printf("\n按回车键继续...");
@@ -703,6 +777,7 @@ void ShoppingSystem::SaveToFile(){
     SaveProductsToFile();
     SaveCustomerCartsToFile();
     SaveOrdersToFile();
+    SaveActivitiesToFile();
 }
 
 // 统一加载接口
@@ -711,6 +786,7 @@ void ShoppingSystem::LoadFromFile(){
     LoadProductsFromFile();
     LoadCustomerCartsFromFile();
     LoadOrdersFromFile();
+    LoadActivitiesFromFile();
 }
 
 // 从文件加载订单数据到内存
@@ -883,5 +959,140 @@ void ShoppingSystem::SyncProductInAllCarts(const Product& product){
     if(updated_count > 0){
         SaveCustomerCartsToFile();
         printf("已同步更新 %d 条购物车中的商品信息（含库存）。\n", updated_count);
+    }
+}
+
+void ShoppingSystem::SaveActivitiesToFile(){
+    ofstream outfile(ACTIVITIES_FILE);
+    if(!outfile.is_open()){
+        printf("无法打开活动数据文件进行写入！\n");
+        return;
+    }
+    for(size_t i = 0; i < activities.size(); i++){
+        outfile << activities.at(i).activity_name << "|"
+                << activities.at(i).activity_type_discount << "|"
+                << activities.at(i).activity_type_full_reduction << "|"
+                << activities.at(i).activity_start_time << "|"
+                << activities.at(i).activity_end_time << "|"   
+                << activities.at(i).activity_discount << "|"
+                << activities.at(i).activity_threshold << "|"
+                << activities.at(i).activity_full_reduction_amount << "|"
+                << activities.at(i).activity_status << "|"
+                << activities.at(i).activity_discount_products.size() << "|";
+        for(size_t j = 0; j < activities.at(i).activity_discount_products.size(); j++){
+            outfile << activities.at(i).activity_discount_products.at(j).first.GetProductName() << "," << activities.at(i).activity_discount_products.at(j).second << ";";
+        }
+        outfile << "|" << activities.at(i).activity_full_reduction_products.size() << "|";
+        for(size_t j = 0; j < activities.at(i).activity_full_reduction_products.size(); j++){
+            outfile << activities.at(i).activity_full_reduction_products.at(j).GetProductName() << ";";
+        }
+        outfile << endl;
+    }
+    outfile.close();
+    printf("活动数据已保存到 %s\n", ACTIVITIES_FILE.c_str());
+}
+
+//加载活动数据到内存ShoppingSystem::activities
+void ShoppingSystem::LoadActivitiesFromFile(){
+    ifstream infile(ACTIVITIES_FILE);
+    if(!infile.is_open()){
+        printf("活动数据文件不存在，将创建新文件。\n");
+        return;
+    }
+    ShoppingSystem::activities.clear();
+    string line;
+    while(getline(infile, line)){
+        if(line.empty()) continue;
+        stringstream ss(line);
+        
+        // 读取前9个字段
+        string activity_name_str, activity_type_discount_str, activity_type_full_reduction_str, 
+               activity_start_time_str, activity_end_time_str, activity_discount_str, 
+               activity_threshold_str, activity_full_reduction_amount_str, activity_status;
+        
+        getline(ss, activity_name_str, '|');
+        getline(ss, activity_type_discount_str, '|');
+        getline(ss, activity_type_full_reduction_str, '|');
+        getline(ss, activity_start_time_str, '|');
+        getline(ss, activity_end_time_str, '|');
+        getline(ss, activity_discount_str, '|');
+        getline(ss, activity_threshold_str, '|');
+        getline(ss, activity_full_reduction_amount_str, '|');
+        getline(ss, activity_status, '|');
+        
+        bool activity_type_discount = (activity_type_discount_str == "1");
+        bool activity_type_full_reduction = (activity_type_full_reduction_str == "1");
+        long long activity_start_time = stoll(activity_start_time_str);
+        long long activity_end_time = stoll(activity_end_time_str);
+        double activity_discount = stod(activity_discount_str);
+        double activity_threshold = stod(activity_threshold_str);
+        double activity_full_reduction_amount = stod(activity_full_reduction_amount_str);
+        
+        // 读取折扣商品数量和列表
+        string discount_count_str;
+        getline(ss, discount_count_str, '|');
+        
+        string discount_products_str;
+        getline(ss, discount_products_str, '|');
+        
+        vector<pair<Product, double>> discount_products;
+        if(!discount_products_str.empty()){
+            stringstream ss_discount(discount_products_str);
+            string product_token;
+            while(getline(ss_discount, product_token, ';')){
+                if(product_token.empty()) continue;
+                size_t comma_pos = product_token.find(',');
+                if(comma_pos == string::npos) continue;
+                string pname = product_token.substr(0, comma_pos);
+                string rate_str = product_token.substr(comma_pos + 1);
+                double rate = stod(rate_str);
+                
+                for(size_t k = 0; k < ShoppingSystem::products.size(); k++){
+                    if(ShoppingSystem::products.at(k).GetProductName() == pname){
+                        discount_products.push_back(make_pair(ShoppingSystem::products.at(k), rate));
+                        break;
+                    }
+                }
+            }
+        }
+        
+        // 读取满减商品数量和列表
+        string full_reduction_count_str;
+        getline(ss, full_reduction_count_str, '|');
+        
+        string full_reduction_products_str;
+        getline(ss, full_reduction_products_str);
+        
+        vector<Product> full_reduction_products;
+        if(!full_reduction_products_str.empty()){
+            stringstream ss_full_reduction(full_reduction_products_str);
+            string product_name;
+            while(getline(ss_full_reduction, product_name, ';')){
+                if(product_name.empty()) continue;
+                for(size_t k = 0; k < ShoppingSystem::products.size(); k++){
+                    if(ShoppingSystem::products.at(k).GetProductName() == product_name){
+                        full_reduction_products.push_back(ShoppingSystem::products.at(k));
+                        break;
+                    }
+                }
+            }
+        }
+        
+        ShoppingSystem::activities.push_back(Activity(activity_name_str, activity_type_discount, activity_type_full_reduction, activity_start_time, activity_end_time, activity_discount, activity_threshold, activity_full_reduction_amount, activity_status, discount_products, full_reduction_products));
+    }
+    infile.close();
+    printf("已从 %s 加载 %zu 个活动。\n", ACTIVITIES_FILE.c_str(), ShoppingSystem::activities.size());
+}
+
+// 自动更新活动状态
+void ShoppingSystem::AutoUpdateActivityStatuses(){
+    time_t now = time(nullptr);
+    for(size_t i = 0; i < ShoppingSystem::activities.size(); i++){
+        Activity& activity = ShoppingSystem::activities.at(i);
+        if(activity.activity_status == "进行中"){
+            if(now >= activity.activity_end_time){
+                activity.activity_status = "已结束";
+            }
+        }
     }
 }
