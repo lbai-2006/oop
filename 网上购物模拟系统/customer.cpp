@@ -5,6 +5,7 @@
 #include "customer.hpp"
 #include "cart.hpp"
 #include "shopping_system.hpp"
+#include "file_process.hpp"
 #include<vector>
 #include<sstream>
 #include<string>
@@ -50,7 +51,7 @@ void Customer::ChangePassword(string username, string old_password, string new_p
         printf("密码修改成功！\n");
         
         // 保存到文件
-        ShoppingSystem::SaveCustomersToFile();
+        FileProcess::SaveCustomersToFile();
     } else {
         printf("密码不正确，密码修改失败！\n");
     }
@@ -70,7 +71,7 @@ void Customer::SignUp(string username, string password){
     printf("注册成功！\n");
     
     // 保存到文件
-    ShoppingSystem::SaveCustomersToFile();
+    FileProcess::SaveCustomersToFile();
 }
 
 int Customer::LogIn(string username, string password){
@@ -371,9 +372,9 @@ void Customer::BuyProducts(){
         // 保存购物车信息
         this->cart.SaveCustomerCartsToList();
         // 保存商品信息
-        ShoppingSystem::SaveProductsToFile();
+        FileProcess::SaveProductsToFile();
         // 保存购物车信息
-        ShoppingSystem::SaveCustomerCartsToFile();
+        FileProcess::SaveCustomerCartsToFile();
     }else if(choice == 2){
         // 显示商品列表
         this->BrowseProducts();
@@ -421,9 +422,9 @@ void Customer::BuyProducts(){
         }
         
         // 保存商品信息
-        ShoppingSystem::SaveProductsToFile();
+        FileProcess::SaveProductsToFile();
         // 保存购物车信息
-        ShoppingSystem::SaveCustomerCartsToFile();
+        FileProcess::SaveCustomerCartsToFile();
     }else{
         printf("输入错误，购买失败！\n");
         return;
@@ -470,7 +471,7 @@ void Customer::BuyProducts(){
     Order order(order_id, this->username, order_items, purchase_time, total_amount, address, "待发货");
     ShoppingSystem::orders[order_id] = order;
     // 保存订单信息
-    ShoppingSystem::SaveOrdersToFile();
+    FileProcess::SaveOrdersToFile();
     
     printf("订单创建成功！订单编号：%s，订单总金额：%.2f\n", order_id.c_str(), total_amount);
     // 显示订单详情
@@ -513,5 +514,5 @@ void Customer::ConfirmOrderReceipt(string order_id){
     printf("订单%s确认收货成功！\n", order_id.c_str());
     
     // 保存订单信息
-    ShoppingSystem::SaveOrdersToFile();
+    FileProcess::SaveOrdersToFile();
 }

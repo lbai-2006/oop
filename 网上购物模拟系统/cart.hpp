@@ -1,4 +1,7 @@
 #pragma once
+#ifndef CART_HPP
+#define CART_HPP
+
 #include<iostream>
 #include<vector>
 #include<string>
@@ -13,7 +16,7 @@ class Cart {
     friend class Administrator;
     
     private:
-        vector<pair<Product, int>> items;  
+        vector<pair<Product, int>> items; //vector会自动释放内存  
         string username;  
         
     public:
@@ -32,3 +35,5 @@ class Cart {
         
         size_t GetSize() const { return items.size(); }  
 };
+
+#endif

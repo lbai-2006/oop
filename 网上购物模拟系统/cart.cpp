@@ -1,6 +1,7 @@
 #include "cart.hpp"
 #include "shopping_system.hpp"
 #include "product.hpp"
+#include "file_process.hpp"
 #include<iostream>
 #include<vector>
 #include<string>
@@ -312,7 +313,7 @@ void Cart::SaveCustomerCartsToList(){
     ShoppingSystem::customer_carts[this->username] = this->items;
     
     // 保存购物车内容到文件
-    ShoppingSystem::SaveCustomerCartsToFile();
+    FileProcess::SaveCustomerCartsToFile();
     
     printf("购物车保存成功！用户：%s  商品数量：%zu\n", this->username.c_str(), this->items.size());
 }

@@ -32,6 +32,20 @@ ShoppingSystem添加购物车文件内存的读写更新
 给ShoppingSystem类添加用户操作选项：购买商品，查看订单
 ShoppingSystem添加订单文件内存的读写更新
 
+第五次 VS 第四次
+添加Activity类，活动属性
+给Administrator类添加函数AddActivity、EditActivity、DeleteActivity，并把活动商品标签存到文件里
+给Customer类添加CalculatePromotionalPrice，计算促销价格
+修改Prodict类的Display方法，显示活动信息
+在ShoppingSystem中添加管理员操作选项：添加活动、修改活动、删除活动
+ShoppingSystem添加活动文件内存的读写更新
+
+第六次 VS 第五次
+添加FileProcess类，统一处理文件更新
+添加Statistic类，统计订单数据
+在ShoppingSystem中添加管理员操作，查看统计数据
+
+
 编译运行：
 cd "D:\study\oop\cloud\oop\网上购物模拟系统"
 $src = Get-ChildItem -Filter *.cpp | % FullName

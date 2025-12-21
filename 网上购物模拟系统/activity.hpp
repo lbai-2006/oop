@@ -1,4 +1,7 @@
 #pragma once
+#ifndef ACITIVITY_HPP
+#define ACTIVITY_HPP
+
 #include<iostream>
 #include<vector>
 #include<string>
@@ -39,3 +42,5 @@ class Activity{
         void Display() const; //显示活动信息
         
 };
+
+#endif

@@ -1,4 +1,7 @@
 #pragma once
+#ifndef ORDER_HPP
+#define ORDER_HPP
+
 #include<iostream>
 #include<vector>
 #include<string>
@@ -12,7 +15,7 @@ class Order{
 public:
     string id;                               // 订单编号
     string username;                         // 下单用户
-    vector<pair<Product, int>> items;        // 购买的商品及数量
+    vector<pair<Product, int>> items;        // 购买的商品及数量，vector会自动释放内存
     string purchase_time;                    // 购买时间
     double total_amount;                     // 订单总金额
     string delivery_address;                 // 收货地址
@@ -37,3 +40,5 @@ public:
     // 简单状态更新示例：待发货 -> 已发货
     void UpdateOrderStatus();
 };
+
+#endif

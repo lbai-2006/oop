@@ -1,4 +1,7 @@
 #pragma once
+#ifndef ADMINISTRATOR_HPP
+#define ADMINISTRATOR_HPP
+
 #include<iostream>
 #include<string>
 #include<vector>
@@ -17,6 +20,11 @@ class Administrator{
     public:
         Administrator();
         //~Administrator();
+
+        // 解耦函数，访问属性
+        string GetName () const {return name;}
+        string GetPassword () const {return password;}
+
         int LogIn(string name, string password);
         void LogOut(); //退出登录
         void AddProduct(Product product); //添加商品
@@ -29,3 +37,5 @@ class Administrator{
         void EditActivity(); //修改活动信息
         void DeleteActivity(); //删除活动
     };
+
+#endif

@@ -1,4 +1,7 @@
 #pragma once
+#ifndef PRODUCT_HPP
+#define PRODUCT_HPP
+
 #include<iostream>
 
 using namespace std;
@@ -25,3 +28,5 @@ class Product{
         //ÐÞ¸ÄÉÌÆ·¿â´æ
         void ModifyProductStock(int quantity);
     }; 
+
+#endif

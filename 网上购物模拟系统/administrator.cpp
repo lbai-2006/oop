@@ -4,6 +4,7 @@
 #include "administrator.hpp"
 #include "shopping_system.hpp"
 #include "customer.hpp"
+#include "file_process.hpp"
 #include<vector>
 #include<sstream>
 #include<string>
@@ -67,7 +68,7 @@ void Administrator::AddProduct(Product product){
     printf("商品添加成功！\n");
     
     // 保存到文件
-    ShoppingSystem::SaveProductsToFile();
+    FileProcess::SaveProductsToFile();
 }
 
 void Administrator::EditProduct(Product product){
@@ -101,9 +102,9 @@ void Administrator::EditProduct(Product product){
         }
         
         // 保存购物车数据到文件
-        ShoppingSystem::SaveCustomerCartsToFile();
+        FileProcess::SaveCustomerCartsToFile();
         // 保存商品数据到文件
-        ShoppingSystem::SaveProductsToFile();
+        FileProcess::SaveProductsToFile();
     } else {
         printf("商品不存在，修改失败！\n");
     }
@@ -142,9 +143,9 @@ void Administrator::DeleteProduct(Product product){
         }
         
         // 保存购物车数据到文件
-        ShoppingSystem::SaveCustomerCartsToFile();
+        FileProcess::SaveCustomerCartsToFile();
         // 保存商品数据到文件
-        ShoppingSystem::SaveProductsToFile();
+        FileProcess::SaveProductsToFile();
     }
 }
 void Administrator::UpdateOrderStatus(Order order){
@@ -237,7 +238,7 @@ void Administrator::AddActivity(){
     ShoppingSystem::activities.push_back(activity);
     printf("活动添加成功！\n");
     //保存活动列表到文件
-    ShoppingSystem::SaveActivitiesToFile();
+    FileProcess::SaveActivitiesToFile();
 }
 
 void Administrator::DeleteActivity(){
@@ -259,7 +260,7 @@ void Administrator::DeleteActivity(){
         printf("活动不存在，删除失败！\n");
     }
     //保存活动列表到文件
-    ShoppingSystem::SaveActivitiesToFile();
+    FileProcess::SaveActivitiesToFile();
 }
 
 void Administrator::EditActivity(){

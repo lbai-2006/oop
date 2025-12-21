@@ -1,4 +1,7 @@
 #pragma once
+#ifndef CUSTOMER_HPP
+#define CUSTOMER_HPP
+
 #include<iostream>
 #include<vector>
 #include<string>
@@ -14,13 +17,17 @@ class Administrator;
 class Customer{
     friend class ShoppingSystem; 
     friend class Administrator; 
+    friend class FileProcess;
     
     private:
         string username;
         string password;
         Cart cart; // 购物车，使用Cart类表示
-        vector<Order> orders; // 订单，使用Order类表示
+        vector<Order> orders; // 订单，使用Order类表示，vector会自动释放内存
     public:
+        // 访问器：返回用户名和密码（用于文件读写等需要访问私有字段的场景）
+        string GetUsername() const { return username; }
+        string GetPassword() const { return password; }
         Customer(string username, string password, bool add_to_db = true);
         //~Customer();
         void SignUp(string username, string password);
@@ -45,3 +52,5 @@ class Customer{
         void AddOrder(Order order);
         void ShowOrders();
 };
+
+#endif
