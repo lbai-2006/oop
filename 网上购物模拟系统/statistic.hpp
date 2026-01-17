@@ -1,4 +1,4 @@
-// å·¥å…·ç±»ï¼Œé™æ€å‡½æ•°
+// ¹¤¾ßÀà
 #pragma once
 #ifndef STATISTIC_HPP
 #define STATISTIC_HPP

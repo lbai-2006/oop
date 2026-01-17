@@ -172,7 +172,6 @@ static void CalculatePromotionalPrice(const vector<pair<Product, int>>& items,
     full_reduction_amount = 0;
     
     time_t now = time(nullptr);
-    vector<pair<Product, int>> full_reduction_items;
     
     // 计算每个商品的促销价
     for(size_t i = 0; i < items.size(); i++){
@@ -210,66 +209,78 @@ static void CalculatePromotionalPrice(const vector<pair<Product, int>>& items,
         }
         
         total_after_discount += discounted_total;
-        
-        // 检查是否有满减活动
-        for(size_t j = 0; j < ShoppingSystem::activities.size(); j++){
-            Activity& activity = ShoppingSystem::activities.at(j);
-            if(activity.activity_status == "进行中" && 
-               activity.activity_start_time <= now && 
-               activity.activity_end_time >= now &&
-               activity.activity_type_full_reduction){
+    }
+    
+    // 计算满减金额（直接从订单商品items中筛选，按活动分别计算）
+    printf("=================开始计算满减金额：\n");
+    
+    // 遍历所有进行中的满减活动
+    for(size_t j = 0; j < ShoppingSystem::activities.size(); j++){
+        Activity& activity = ShoppingSystem::activities.at(j);
+        if(activity.activity_status == "进行中" && 
+           activity.activity_start_time <= now && 
+           activity.activity_end_time >= now &&
+           activity.activity_type_full_reduction){
+            
+            printf("检查满减活动：%s\n", activity.activity_name.c_str());
+            
+            // 计算订单中属于该活动的商品总金额
+            double this_activity_subtotal = 0;
+            for(size_t i = 0; i < items.size(); i++){
+                const Product& product = items.at(i).first;
+                int quantity = items.at(i).second;
+                
+                // 检查该商品是否在当前活动的满减商品列表中
+                bool in_this_activity = false;
                 for(size_t k = 0; k < activity.activity_full_reduction_products.size(); k++){
                     if(activity.activity_full_reduction_products.at(k).GetProductName() == product.GetProductName()){
-                        full_reduction_items.push_back(items.at(i));
+                        in_this_activity = true;
                         break;
                     }
                 }
-            }
-        }
-    }
-    
-    // 计算满减总和
-    if(!full_reduction_items.empty()){
-        double full_reduction_subtotal = 0;
-        for(size_t i = 0; i < full_reduction_items.size(); i++){
-            const Product& product = full_reduction_items.at(i).first;
-            int quantity = full_reduction_items.at(i).second;
-            double price = product.GetProductPrice();
-            
-            // 检查是否有折扣活动
-            double discount_rate = 1.0;
-            for(size_t j = 0; j < ShoppingSystem::activities.size(); j++){
-                Activity& activity = ShoppingSystem::activities.at(j);
-                if(activity.activity_status == "进行中" && 
-                   activity.activity_start_time <= now && 
-                   activity.activity_end_time >= now &&
-                   activity.activity_type_discount){
-                    for(size_t k = 0; k < activity.activity_discount_products.size(); k++){
-                        if(activity.activity_discount_products.at(k).first.GetProductName() == product.GetProductName()){
-                            discount_rate = activity.activity_discount_products.at(k).second;
-                            break;
+                
+                if(!in_this_activity) continue; // 不属于当前活动，跳过
+                
+                // 计算该商品的实际价格（考虑折扣活动）
+                double price = product.GetProductPrice();
+                double discount_rate = 1.0;
+                
+                // 检查该商品是否参与折扣活动
+                for(size_t m = 0; m < ShoppingSystem::activities.size(); m++){
+                    Activity& discount_activity = ShoppingSystem::activities.at(m);
+                    if(discount_activity.activity_status == "进行中" && 
+                       discount_activity.activity_start_time <= now && 
+                       discount_activity.activity_end_time >= now &&
+                       discount_activity.activity_type_discount){
+                        for(size_t k = 0; k < discount_activity.activity_discount_products.size(); k++){
+                            if(discount_activity.activity_discount_products.at(k).first.GetProductName() == product.GetProductName()){
+                                discount_rate = discount_activity.activity_discount_products.at(k).second;
+                                break;
+                            }
                         }
+                        if(discount_rate < 1.0) break; // 已找到折扣
                     }
                 }
+                
+                double item_amount = price * quantity * discount_rate;
+                this_activity_subtotal += item_amount;
+                printf("  商品 %s: %.2f元 x %d x %.2f折扣 = %.2f元\n",
+                       product.GetProductName().c_str(),
+                       price, quantity, discount_rate, item_amount);
             }
             
-            full_reduction_subtotal += price * quantity * discount_rate;
-        }
-        
-        // 检查是否有满减活动
-        for(size_t j = 0; j < ShoppingSystem::activities.size(); j++){
-            Activity& activity = ShoppingSystem::activities.at(j);
-            if(activity.activity_status == "进行中" && 
-               activity.activity_start_time <= now && 
-               activity.activity_end_time >= now &&
-               activity.activity_type_full_reduction){
-                if(full_reduction_subtotal >= activity.activity_threshold){
-                    full_reduction_amount = activity.activity_full_reduction_amount;
-                    printf("满减阈值：%.2f 元，满减金额：%.2f 元\n", 
-                           activity.activity_threshold, 
-                           full_reduction_amount);
-                    break;
-                }
+            printf("活动 %s 的参与商品总金额：%.2f 元，满减阈值：%.2f 元\n",
+                   activity.activity_name.c_str(),
+                   this_activity_subtotal,
+                   activity.activity_threshold);
+            
+            // 判断是否达到满减阈值
+            if(this_activity_subtotal >= activity.activity_threshold){
+                full_reduction_amount = activity.activity_full_reduction_amount;
+                printf("? 触发满减！满减金额：%.2f 元\n", full_reduction_amount);
+                break; // 只应用一个满减活动（取第一个满足条件的）
+            } else {
+                printf("? 未达到满减阈值\n");
             }
         }
     }
