@@ -212,7 +212,7 @@ static void CalculatePromotionalPrice(const vector<pair<Product, int>>& items,
     }
     
     // 计算满减金额（直接从订单商品items中筛选，按活动分别计算）
-    printf("=================开始计算满减金额：\n");
+    //printf("=================开始计算满减金额：\n");
     
     // 遍历所有进行中的满减活动
     for(size_t j = 0; j < ShoppingSystem::activities.size(); j++){
@@ -277,10 +277,10 @@ static void CalculatePromotionalPrice(const vector<pair<Product, int>>& items,
             // 判断是否达到满减阈值
             if(this_activity_subtotal >= activity.activity_threshold){
                 full_reduction_amount = activity.activity_full_reduction_amount;
-                printf("? 触发满减！满减金额：%.2f 元\n", full_reduction_amount);
+                printf(" 触发满减！满减金额：%.2f 元\n", full_reduction_amount);
                 break; // 只应用一个满减活动（取第一个满足条件的）
             } else {
-                printf("? 未达到满减阈值\n");
+                printf(" 未达到满减阈值\n");
             }
         }
     }
