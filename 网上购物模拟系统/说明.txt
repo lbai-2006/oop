@@ -1,53 +1,48 @@
-Àà£º
-ShoppingSystem
-Administrator
-Customer
-Product
 
 
-µÚ¶ş´Î VS µÚÒ»´Î
-Ìí¼ÓProductÀà£¬ÉÌÆ·±¾ÉíĞÔÖÊ£¬ÓÑÔªÀàAdministratorÓÃÓÚ²éÑ¯
-ShoppingSystemÀàÌí¼Ó¾²Ì¬±äÁ¿£ºusers  productsµ±×÷ÄÚ´æ£¬´æ´¢¹ºÎïÏµÍ³Êı¾İ£¬ÍË³öÏµÍ³µÄÊ±ºòÇå¿ÕÄÚ´æ
-ShoppingSystemÀàÌí¼ÓÓÑÔªÀà£ºAdministrator£¬Customer£¬·ÃÎÊÊı¾İ¿â
-ÎÄ¼ş£ºcustomers.txt products.txtµ±×÷Êı¾İ¿â£¬³Ö¾Ã±£´æĞÅÏ¢£¬ÍË³öÊ±ÓÖ±£´æÎÄ¼ş
-ÄÚ´æ´ÓÎÄ¼ş¶ÁÈ¡ĞÅÏ¢£¬ÊµÊ±¸üĞÂ£¬¸²¸Ç
-¸øCustomerÀàÌí¼Óº¯Êı£ºBrowseProducts£¬PreciseSearchProducts£¬FuzzySearchProducts
-¸øAdministratorÀàÌí¼Óº¯Êı£ºAddProduct£¬EditProduct£¬DeleteProduct
+ç¬¬äºŒæ¬¡ VS ç¬¬ä¸€æ¬¡
+æ·»åŠ Productç±»ï¼Œå•†å“æœ¬èº«æ€§è´¨ï¼Œå‹å…ƒç±»Administratorç”¨äºæŸ¥è¯¢
+ShoppingSystemç±»æ·»åŠ é™æ€å˜é‡ï¼šusers  productså½“ä½œå†…å­˜ï¼Œå­˜å‚¨è´­ç‰©ç³»ç»Ÿæ•°æ®ï¼Œé€€å‡ºç³»ç»Ÿçš„æ—¶å€™æ¸…ç©ºå†…å­˜
+ShoppingSystemç±»æ·»åŠ å‹å…ƒç±»ï¼šAdministratorï¼ŒCustomerï¼Œè®¿é—®æ•°æ®åº“
+æ–‡ä»¶ï¼šcustomers.txt products.txtå½“ä½œæ•°æ®åº“ï¼ŒæŒä¹…ä¿å­˜ä¿¡æ¯ï¼Œé€€å‡ºæ—¶åˆä¿å­˜æ–‡ä»¶
+å†…å­˜ä»æ–‡ä»¶è¯»å–ä¿¡æ¯ï¼Œå®æ—¶æ›´æ–°ï¼Œè¦†ç›–
+ç»™Customerç±»æ·»åŠ å‡½æ•°ï¼šBrowseProductsï¼ŒPreciseSearchProductsï¼ŒFuzzySearchProducts
+ç»™Administratorç±»æ·»åŠ å‡½æ•°ï¼šAddProductï¼ŒEditProductï¼ŒDeleteProduct
 
 
-µÚÈı´Î VS µÚ¶ş´Î
-Ìí¼ÓÀàCart £¬·½·¨AddToCart£¬RemoveFromCart£¬ModifyCart£¬ShowCart·½·¨
-ÀàCustomerÖĞÌí¼Ó³ÉÔ±±äÁ¿cart£¬²Ù×÷¹ºÎï³µ
-Ìí¼Ó¾²Ì¬±äÁ¿customer_carts×÷ÎªÄÚ´æ
-ÎÄ¼ş£ºcustomer_carts.txt×÷ÎªÊı¾İ¿â
-ÀàCustomerÖĞÌí¼Ó·½·¨LoadCustomerCartsFromList£¬SaveCustomerCartsToList½øĞĞÎÄ¼ş¡¢ÄÚ´æ¡¢¹ºÎï³µ±äÁ¿µÄ¸üĞÂ
-ShoppingSystemÌí¼ÓÓÃ»§¹ºÎï³µ²Ù×÷
-ShoppingSystemÌí¼Ó¹ºÎï³µÎÄ¼şÄÚ´æµÄ¶ÁĞ´¸üĞÂ
+ç¬¬ä¸‰æ¬¡ VS ç¬¬äºŒæ¬¡
+æ·»åŠ ç±»Cart ï¼Œæ–¹æ³•AddToCartï¼ŒRemoveFromCartï¼ŒModifyCartï¼ŒShowCartæ–¹æ³•
+ç±»Customerä¸­æ·»åŠ æˆå‘˜å˜é‡cartï¼Œæ“ä½œè´­ç‰©è½¦
+æ·»åŠ é™æ€å˜é‡customer_cartsä½œä¸ºå†…å­˜
+æ–‡ä»¶ï¼šcustomer_carts.txtä½œä¸ºæ•°æ®åº“
+ç±»Customerä¸­æ·»åŠ æ–¹æ³•LoadCustomerCartsFromListï¼ŒSaveCustomerCartsToListè¿›è¡Œæ–‡ä»¶ã€å†…å­˜ã€è´­ç‰©è½¦å˜é‡çš„æ›´æ–°
+ShoppingSystemæ·»åŠ ç”¨æˆ·è´­ç‰©è½¦æ“ä½œ
+ShoppingSystemæ·»åŠ è´­ç‰©è½¦æ–‡ä»¶å†…å­˜çš„è¯»å†™æ›´æ–°
 
-µÚËÄ´Î VS µÚÈı´Î
-Ìí¼ÓOrderÀà£¬´æ´¢¶©µ¥ĞÅÏ¢£¬Õ¹Ê¾·½·¨
-¸øCustomerÀàÌí¼Ó·½·¨BuyProducts£¬¹ºÂòÉÌÆ·£¬ConfirmOrderReceipt£¬È·ÈÏ¶©µ¥
-¸øAdministratorÀàÌí¼Ó·½·¨UpdateOrderStatus£¬¶Ô¶©µ¥¸üĞÂ×´Ì¬½øĞĞ¸ü¸Ä£¨Ä¬ÈÏÎª×Ô¶¯¸üĞÂ£©
-¸øShoppingSystemÀàÌí¼Ó·½·¨AutoUpdateOrderStatuses£¬ÔÚ¹ºÂòÉÌÆ·ºóÒÔ¼°ÏµÍ³¸üĞÂºó×Ô¶¯¸üĞÂ¶©µ¥Êı¾İ¿âÎÄ¼şÓëÄÚ´æ
-¸øShoppingSystemÀàÌí¼ÓÓÃ»§²Ù×÷Ñ¡Ïî£º¹ºÂòÉÌÆ·£¬²é¿´¶©µ¥
-ShoppingSystemÌí¼Ó¶©µ¥ÎÄ¼şÄÚ´æµÄ¶ÁĞ´¸üĞÂ
+ç¬¬å››æ¬¡ VS ç¬¬ä¸‰æ¬¡
+æ·»åŠ Orderç±»ï¼Œå­˜å‚¨è®¢å•ä¿¡æ¯ï¼Œå±•ç¤ºæ–¹æ³•
+ç»™Customerç±»æ·»åŠ æ–¹æ³•BuyProductsï¼Œè´­ä¹°å•†å“ï¼ŒConfirmOrderReceiptï¼Œç¡®è®¤è®¢å•
+ç»™Administratorç±»æ·»åŠ æ–¹æ³•UpdateOrderStatusï¼Œå¯¹è®¢å•æ›´æ–°çŠ¶æ€è¿›è¡Œæ›´æ”¹ï¼ˆé»˜è®¤ä¸ºè‡ªåŠ¨æ›´æ–°ï¼‰
+ç»™ShoppingSystemç±»æ·»åŠ æ–¹æ³•AutoUpdateOrderStatusesï¼Œåœ¨è´­ä¹°å•†å“åä»¥åŠç³»ç»Ÿæ›´æ–°åè‡ªåŠ¨æ›´æ–°è®¢å•æ•°æ®åº“æ–‡ä»¶ä¸å†…å­˜
+ç»™ShoppingSystemç±»æ·»åŠ ç”¨æˆ·æ“ä½œé€‰é¡¹ï¼šè´­ä¹°å•†å“ï¼ŒæŸ¥çœ‹è®¢å•
+ShoppingSystemæ·»åŠ è®¢å•æ–‡ä»¶å†…å­˜çš„è¯»å†™æ›´æ–°
 
-µÚÎå´Î VS µÚËÄ´Î
-Ìí¼ÓActivityÀà£¬»î¶¯ÊôĞÔ
-¸øAdministratorÀàÌí¼Óº¯ÊıAddActivity¡¢EditActivity¡¢DeleteActivity£¬²¢°Ñ»î¶¯ÉÌÆ·±êÇ©´æµ½ÎÄ¼şÀï
-¸øCustomerÀàÌí¼ÓCalculatePromotionalPrice£¬¼ÆËã´ÙÏú¼Û¸ñ
-ĞŞ¸ÄProdictÀàµÄDisplay·½·¨£¬ÏÔÊ¾»î¶¯ĞÅÏ¢
-ÔÚShoppingSystemÖĞÌí¼Ó¹ÜÀíÔ±²Ù×÷Ñ¡Ïî£ºÌí¼Ó»î¶¯¡¢ĞŞ¸Ä»î¶¯¡¢É¾³ı»î¶¯
-ShoppingSystemÌí¼Ó»î¶¯ÎÄ¼şÄÚ´æµÄ¶ÁĞ´¸üĞÂ
+ç¬¬äº”æ¬¡ VS ç¬¬å››æ¬¡
+æ·»åŠ Activityç±»ï¼Œæ´»åŠ¨å±æ€§
+ç»™Administratorç±»æ·»åŠ å‡½æ•°AddActivityã€EditActivityã€DeleteActivityï¼Œå¹¶æŠŠæ´»åŠ¨å•†å“æ ‡ç­¾å­˜åˆ°æ–‡ä»¶é‡Œ
+ç»™Customerç±»æ·»åŠ CalculatePromotionalPriceï¼Œè®¡ç®—ä¿ƒé”€ä»·æ ¼
+ä¿®æ”¹Prodictç±»çš„Displayæ–¹æ³•ï¼Œæ˜¾ç¤ºæ´»åŠ¨ä¿¡æ¯
+åœ¨ShoppingSystemä¸­æ·»åŠ ç®¡ç†å‘˜æ“ä½œé€‰é¡¹ï¼šæ·»åŠ æ´»åŠ¨ã€ä¿®æ”¹æ´»åŠ¨ã€åˆ é™¤æ´»åŠ¨
+ShoppingSystemæ·»åŠ æ´»åŠ¨æ–‡ä»¶å†…å­˜çš„è¯»å†™æ›´æ–°
 
-µÚÁù´Î VS µÚÎå´Î
-Ìí¼ÓFileProcessÀà£¬Í³Ò»´¦ÀíÎÄ¼ş¸üĞÂ
-Ìí¼ÓStatisticÀà£¬Í³¼Æ¶©µ¥Êı¾İ
-ÔÚShoppingSystemÖĞÌí¼Ó¹ÜÀíÔ±²Ù×÷£¬²é¿´Í³¼ÆÊı¾İ
+ç¬¬å…­æ¬¡ VS ç¬¬äº”æ¬¡
+æ·»åŠ FileProcessç±»ï¼Œç»Ÿä¸€å¤„ç†æ–‡ä»¶æ›´æ–°
+æ·»åŠ Statisticç±»ï¼Œç»Ÿè®¡è®¢å•æ•°æ®
+åœ¨ShoppingSystemä¸­æ·»åŠ ç®¡ç†å‘˜æ“ä½œï¼ŒæŸ¥çœ‹ç»Ÿè®¡æ•°æ®
 
 
-±àÒëÔËĞĞ£º
-cd "D:\study\oop\cloud\oop\ÍøÉÏ¹ºÎïÄ£ÄâÏµÍ³"
+ç¼–è¯‘è¿è¡Œï¼š
 $src = Get-ChildItem -Filter *.cpp | % FullName
 g++ -std=c++17 -O2 -Wall -Wextra $src -o main
+
 .\main
